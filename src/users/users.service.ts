@@ -1,55 +1,42 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService, User } from '../prisma';
 import { CreateUserDto } from './dto';
-import { IUser } from './types';
-
-const mockUsers = [
-  { id: 1, name: 'Serhii' },
-  { id: 2, name: 'John' },
-  { id: 3, name: 'Doe' },
-  { id: 4, name: 'Mark' },
-];
-
-const delayedPromise = (fn: (res, rej) => void, delay = 100): Promise<any> =>
-  new Promise((res, rej) => setTimeout(() => fn(res, rej), delay));
 
 @Injectable()
 export class UsersService {
-  private users = [...mockUsers];
+  constructor(private prisma: PrismaService) {}
 
   async getAll(): Promise<any> {
-    return delayedPromise((res) => res(this.users));
+    return await this.prisma.user.findMany();
   }
 
-  async getById(id: number): Promise<IUser> {
+  async getById(id: number): Promise<User> {
     try {
-      return await delayedPromise((res, rej) => {
-        const user = this.users.find(({ id: uid }) => uid === id);
-        user ? res(user) : rej();
+      return await this.prisma.user.findUnique({
+        where: { id },
+        rejectOnNotFound: true,
       });
     } catch (e) {
-      throw new HttpException('User has no found', HttpStatus.NOT_FOUND);
+      throw new BadRequestException();
     }
   }
 
   async create(createUserDto: CreateUserDto) {
-    const newUser = { id: this.users.length + 1, ...createUserDto };
-    this.users.push(newUser);
-
-    return newUser;
+    return await this.prisma.user.create({ data: { ...createUserDto } });
   }
 
-  async remove(id: number): Promise<void> {
-    this.users = this.users.filter((user) => user.id !== id);
+  async remove(id: number): Promise<User> {
+    try {
+      return await this.prisma.user.delete({ where: { id } });
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   async update(id: number, updateUserDto: CreateUserDto) {
-    this.users = this.users.map((user) => {
-      console.log(typeof user.id, typeof id);
-      if (user.id === id) {
-        console.log(user.id, id);
-        return { ...user, ...updateUserDto };
-      }
-      return user;
+    return this.prisma.user.update({
+      data: { ...updateUserDto },
+      where: { id },
     });
   }
 }

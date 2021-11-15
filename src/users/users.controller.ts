@@ -33,8 +33,7 @@ export class UsersController {
 
   @Delete(':id')
   deleteUser(@Param('id', ParseIntPipe) id: number) {
-    this.usersService.remove(id);
-    return { success: true };
+    return this.usersService.remove(id);
   }
 
   @Patch(':id')
@@ -42,7 +41,6 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe()) updateUserDto: CreateUserDto,
   ) {
-    this.usersService.update(id, updateUserDto);
-    return { success: true };
+    return this.usersService.update(id, updateUserDto);
   }
 }
