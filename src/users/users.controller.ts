@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt.strategy';
 import { CreateUserDto } from './dto';
 import { UsersService } from './Users.service';
 
-@Controller('Users')
+@Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -21,6 +23,7 @@ export class UsersController {
     return this.usersService.getAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   getById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.getById(id);
