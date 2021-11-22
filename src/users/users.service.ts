@@ -40,3 +40,12 @@ export class UsersService {
     });
   }
 }
+
+/** Create several users
+ * await this.prisma.user.createMany({
+ *  data: [
+ *    { firstName: 'Serhii', lastName: 'Konvisar', email: 'skv@mail.com' },
+ *    { firstName: 'John', lastName: 'Doe', email: 'jdoe@mail.com' },
+ *  ],
+ * });
+ */
