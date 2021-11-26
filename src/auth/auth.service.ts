@@ -37,4 +37,10 @@ export class AuthService {
       user: newUser,
     };
   }
+
+  async verifyJwt(token: string) {
+    const { email } = this.jwtService.verify(token);
+    const user = await this.userService.getByEmail(email);
+    return user;
+  }
 }
