@@ -1,6 +1,23 @@
-import { IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
+import { User } from '@prisma/client';
 
-export class CreateUserDto {
+type DBUserFields = Omit<User, 'id'>;
+
+export class CreateUserDto implements DBUserFields {
+  @IsEmail()
+  email: string;
+
   @IsString()
-  name: string;
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+}
+
+export class UpdateUserDto {
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
 }

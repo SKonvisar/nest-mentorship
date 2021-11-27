@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User } from '../types';
 
-const USERS: User[] = [{ id: 1, name: 'John Doe' }];
+const USERS: User[] = [
+  { id: 1, firstName: 'John', lastName: 'Doe', email: 'mock@email.com' },
+];
 
 class MockPrismaEntity<T> {
   constructor(private collection: T[]) {}

@@ -21,7 +21,9 @@ describe('UsersService', () => {
   });
 
   it('get all should invoke prisma findMany query of user collection', async () => {
-    const result = [{ id: 1, name: 'Test User' }];
+    const result = [
+      { id: 1, firstName: 'Test', lastName: 'User', email: 'test@mail.com' },
+    ];
     const spy = jest.spyOn(prisma.user, 'findMany').mockResolvedValue(result);
 
     const data = await service.getAll();
@@ -30,7 +32,12 @@ describe('UsersService', () => {
   });
 
   it('get by id should invoke prisma findUnique query of user collection', async () => {
-    const result = { id: 1, name: 'Test User' };
+    const result = {
+      id: 1,
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@mail.com',
+    };
     const spy = jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(result);
 
     const data = await service.getById(1);
@@ -42,32 +49,45 @@ describe('UsersService', () => {
   });
 
   it('should pass new user data to the prisma create method correctly', async () => {
-    const spy = jest
-      .spyOn(prisma.user, 'create')
-      .mockResolvedValue({ name: 'Test user', id: 1 });
+    const spy = jest.spyOn(prisma.user, 'create').mockResolvedValue({
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@mail.com',
+      id: 1,
+    });
 
-    await service.create({ name: 'Test user' });
+    await service.create({
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@mail.com',
+    });
     expect(spy).toHaveBeenCalledWith({
       data: { name: 'Test user' },
     });
   });
 
   it('should pass id and updated fields to the prisma update method correctly', async () => {
-    const spy = jest
-      .spyOn(prisma.user, 'update')
-      .mockResolvedValue({ name: 'Test user', id: 1 });
+    const spy = jest.spyOn(prisma.user, 'update').mockResolvedValue({
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@mail.com',
+      id: 1,
+    });
 
-    await service.update(1, { name: 'Test user' });
+    await service.update(1, { firstName: 'Test', lastName: 'User' });
     expect(spy).toHaveBeenCalledWith({
       where: { id: 1 },
-      data: { name: 'Test user' },
+      data: { firstName: 'Test', lastName: 'User' },
     });
   });
 
   it('should id to the prisma delete method correctly', async () => {
-    const spy = jest
-      .spyOn(prisma.user, 'delete')
-      .mockResolvedValue({ name: 'Test user', id: 1 });
+    const spy = jest.spyOn(prisma.user, 'delete').mockResolvedValue({
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@mail.com',
+      id: 1,
+    });
 
     await service.remove(1);
     expect(spy).toHaveBeenCalledWith({

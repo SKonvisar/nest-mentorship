@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService, User } from '../prisma';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +21,17 @@ export class UsersService {
     }
   }
 
+  async getByEmail(email: string): Promise<User> {
+    try {
+      return await this.prisma.user.findUnique({
+        where: { email },
+        rejectOnNotFound: false,
+      });
+    } catch (e) {
+      throw new BadRequestException();
+    }
+  }
+
   async create(createUserDto: CreateUserDto) {
     return await this.prisma.user.create({ data: { ...createUserDto } });
   }
@@ -33,10 +44,19 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserDto: CreateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
       data: { ...updateUserDto },
       where: { id },
     });
   }
 }
+
+/** Create several users
+ * await this.prisma.user.createMany({
+ *  data: [
+ *    { firstName: 'Serhii', lastName: 'Konvisar', email: 'skv@mail.com' },
+ *    { firstName: 'John', lastName: 'Doe', email: 'jdoe@mail.com' },
+ *  ],
+ * });
+ */
