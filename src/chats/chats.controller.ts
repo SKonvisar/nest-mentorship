@@ -19,17 +19,9 @@ export class ChatsController {
   @UseGuards(JwtAuthGuard)
   creatChat(@Req() req, @Body(new ValidationPipe()) body: CreateChatDto) {
     const creatorId = req.user.userId;
-    const { membersIds } = body;
 
     // this.chatsService.deleteChat('85f69130-0a43-4694-bb2b-786d4937c001');
-    return this.chatsService.createChat(creatorId, membersIds);
-  }
-
-  @Get('mock-create-chats')
-  createChats() {
-    this.chatsService.createChat('7cdbcadd-7f1f-4ec6-9a75-40c5db1fe057', [
-      'cadb08e3-93ae-4d97-a19d-1c8d2a33e915',
-    ]);
+    return this.chatsService.createChat(creatorId, body);
   }
 
   @Get('mock-create-message')

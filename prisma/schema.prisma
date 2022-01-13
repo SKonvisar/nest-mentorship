@@ -23,6 +23,7 @@ model Chat {
   messages  Message[]
   createdBy User           @relation(fields: [creatorId], references: [id])
   creatorId String
+  name      String
 }
 
 model UsersOnChats {

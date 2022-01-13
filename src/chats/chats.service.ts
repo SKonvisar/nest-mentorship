@@ -7,6 +7,7 @@ import {
   UsersOnChatsRel,
   USERS_CHATS_REL,
 } from '../prisma';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @Injectable()
 export class ChatsService {
@@ -16,13 +17,14 @@ export class ChatsService {
     @Inject(USERS_CHATS_REL) private userChatRel: UsersOnChatsRel,
   ) {}
 
-  async createChat(creatorId: string, membersIds: string[]) {
+  async createChat(creatorId: string, data: CreateChatDto) {
     const idToUserIdField = (id: string) => ({ userId: id });
-    const participantList = membersIds.map(idToUserIdField);
+    const participantList = data.membersIds.map(idToUserIdField);
     participantList.push({ userId: creatorId });
 
     return await this.chatEntity.create({
       data: {
+        name: data.name,
         createdBy: {
           connect: { id: creatorId },
         },
