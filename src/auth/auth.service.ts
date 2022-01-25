@@ -27,7 +27,10 @@ export class AuthService {
 
   async createUser(userData: SignUpDto) {
     const { password, ...rest } = userData;
-    const newUser = await this.userService.getById(3);
+    const newUser = await this.userService.getById(
+      '7cdbcadd-7f1f-4ec6-9a75-40c5db1fe057',
+    );
+    // const newUser = await this.userService.create(rest);
 
     return {
       accessToket: this.jwtService.sign({

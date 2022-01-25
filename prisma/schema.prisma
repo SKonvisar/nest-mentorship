@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
+  id           String         @id @default(uuid())
   email        String         @unique
   firstName    String
   lastName     String
@@ -18,30 +18,31 @@ model User {
 }
 
 model Chat {
-  id        Int            @id @default(autoincrement())
+  id        String         @id @default(uuid())
   members   UsersOnChats[]
   messages  Message[]
   createdBy User           @relation(fields: [creatorId], references: [id])
-  creatorId Int
+  creatorId String
+  name      String
 }
 
 model UsersOnChats {
-  chat   Chat @relation(fields: [chatId], references: [id])
-  chatId Int
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@id([chatId, userId])
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   content   String
   createdAt DateTime @default(now())
 
 
-  chat      Chat @relation(fields: [chatId], references: [id])
-  chatId    Int
-  createdBy User @relation(fields: [userId], references: [id])
-  userId    Int
+  chat      Chat   @relation(fields: [chatId], references: [id])
+  chatId    String
+  createdBy User   @relation(fields: [userId], references: [id])
+  userId    String
 }

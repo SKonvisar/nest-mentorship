@@ -25,7 +25,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  getById(@Param('id', ParseIntPipe) id: number) {
+  getById(@Param('id') id: string) {
     return this.usersService.getById(id);
   }
 
@@ -35,13 +35,13 @@ export class UsersController {
   }
 
   @Delete(':id')
-  deleteUser(@Param('id', ParseIntPipe) id: number) {
+  deleteUser(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
 
   @Patch(':id')
   updateUser(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(new ValidationPipe()) updateUserDto: CreateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto);

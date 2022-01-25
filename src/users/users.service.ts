@@ -10,7 +10,7 @@ export class UsersService {
     return await this.prisma.user.findMany();
   }
 
-  async getById(id: number): Promise<User> {
+  async getById(id: string): Promise<User> {
     try {
       return await this.prisma.user.findUnique({
         where: { id },
@@ -36,7 +36,7 @@ export class UsersService {
     return await this.prisma.user.create({ data: { ...createUserDto } });
   }
 
-  async remove(id: number): Promise<User> {
+  async remove(id: string): Promise<User> {
     try {
       return await this.prisma.user.delete({ where: { id } });
     } catch (e) {
@@ -44,19 +44,21 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
       data: { ...updateUserDto },
       where: { id },
     });
   }
-}
 
-/** Create several users
- * await this.prisma.user.createMany({
- *  data: [
- *    { firstName: 'Serhii', lastName: 'Konvisar', email: 'skv@mail.com' },
- *    { firstName: 'John', lastName: 'Doe', email: 'jdoe@mail.com' },
- *  ],
- * });
- */
+  async createMockUsers() {
+    await this.prisma.user.createMany({
+      data: [
+        { firstName: 'Andrii', lastName: 'Doe', email: 'adoe@mail.com' },
+        { firstName: 'Rich', lastName: 'Gomez', email: 'rgom@mail.com' },
+        { firstName: 'Anup', lastName: 'Prapapa', email: 'anup@mail.com' },
+        { firstName: 'Michel', lastName: 'LastName', email: 'mlast@mail.com' },
+      ],
+    });
+  }
+}
