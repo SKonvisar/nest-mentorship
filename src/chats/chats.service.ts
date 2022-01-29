@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   ChatEntity,
   CHAT_ENTITY,
@@ -7,7 +7,7 @@ import {
   UsersOnChatsRel,
   USERS_CHATS_REL,
 } from '../prisma';
-import { CreateChatDto } from './dto/create-chat.dto';
+import { CreateChatDto, UpdateChatDto } from './dto/create-chat.dto';
 
 @Injectable()
 export class ChatsService {
@@ -17,9 +17,42 @@ export class ChatsService {
     @Inject(USERS_CHATS_REL) private userChatRel: UsersOnChatsRel,
   ) {}
 
+  async getChatById(chatId: string, userId: string) {
+    const { chat } = await this.userChatRel.findFirst({
+      where: { chatId: chatId, userId: userId },
+      include: { chat: true },
+    });
+
+    return chat;
+  }
+
   async createChat(creatorId: string, data: CreateChatDto) {
     const idToUserIdField = (id: string) => ({ userId: id });
     const participantList = data.membersIds.map(idToUserIdField);
+
+    /* check if chat with the user already exist */
+    if (participantList.length === 1) {
+      const chatsWithUsers = await this.chatEntity.findMany({
+        where: {
+          AND: [
+            { members: { some: { userId: creatorId } } },
+            { members: { some: { userId: participantList[0].userId } } },
+          ],
+        },
+        include: {
+          members: true,
+        },
+      });
+
+      const privateChatAlreadyExist = chatsWithUsers.some(
+        (chat) => chat.members.length === 2,
+      );
+
+      if (privateChatAlreadyExist) {
+        throw new BadRequestException();
+      }
+    }
+
     participantList.push({ userId: creatorId });
 
     return await this.chatEntity.create({
@@ -43,6 +76,7 @@ export class ChatsService {
   }
 
   async deleteChat(id: string) {
+    await this.messageEntity.deleteMany({ where: { chatId: id } });
     await this.userChatRel.deleteMany({ where: { chatId: id } });
     await this.chatEntity.delete({ where: { id: id } });
     return;
@@ -65,6 +99,13 @@ export class ChatsService {
           },
         },
       },
+    });
+  }
+
+  async updateChat(id: string, body: UpdateChatDto) {
+    return this.chatEntity.update({
+      where: { id: id },
+      data: { name: body.name },
     });
   }
 
