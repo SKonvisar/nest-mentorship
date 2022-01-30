@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './Users/Users.module';
 import { ChatsModule } from './chats/chats.module';
-import { ChatModule } from './ws-chat/ws-chat.module';
+import { ChatWsModule } from './ws-chat/ws-chat.module';
 
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UsersModule, ChatModule, ChatsModule, PrismaModule, AuthModule],
+  imports: [UsersModule, ChatWsModule, ChatsModule, PrismaModule, AuthModule],
 })
 export class AppModule {}

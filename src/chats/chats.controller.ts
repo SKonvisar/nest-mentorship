@@ -10,7 +10,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt.strategy';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.strategy';
 import { ChatsService } from './chats.service';
 import { CreateChatDto, UpdateChatDto } from './dto/create-chat.dto';
 

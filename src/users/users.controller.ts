@@ -4,13 +4,12 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt.strategy';
+import { JwtAuthGuard } from '../auth/strategies/jwt.strategy';
 import { CreateUserDto } from './dto';
 import { UsersService } from './Users.service';
 
@@ -40,6 +39,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   updateUser(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updateUserDto: CreateUserDto,
