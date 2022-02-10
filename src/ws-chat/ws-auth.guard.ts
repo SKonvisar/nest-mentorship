@@ -7,9 +7,9 @@ export class WsAuthGuard implements CanActivate {
 
   async canActivate(ctx: ExecutionContext) {
     const client = ctx.switchToWs().getClient();
-    const { token } = client.handshake.auth;
-    if (token) {
-      const user = await this.authService.verifyJwt(token);
+    const { accessToken } = client.handshake.auth;
+    if (accessToken) {
+      const user = await this.authService.verifyJwt(accessToken);
 
       if (user) {
         ctx.switchToWs().getClient().handshake.user = user;

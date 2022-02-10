@@ -1,27 +1,52 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  Patch,
   Post,
   Req,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt.strategy';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.strategy';
 import { ChatsService } from './chats.service';
-import { CreateChatDto } from './dto/create-chat.dto';
+import { CreateChatDto, UpdateChatDto } from './dto/create-chat.dto';
 
 @Controller('chats')
+@UseGuards(JwtAuthGuard)
 export class ChatsController {
   constructor(private chatsService: ChatsService) {}
 
+  @Get()
+  getUserChats(@Req() req) {
+    return this.chatsService.getUsersChats(req.user.userId);
+  }
+
+  @Get(':id')
+  getChatById(@Req() req, @Param('id') id: string) {
+    return this.chatsService.getChatById(id, req.user.userId);
+  }
+
   @Post('create')
-  @UseGuards(JwtAuthGuard)
   creatChat(@Req() req, @Body(new ValidationPipe()) body: CreateChatDto) {
     const creatorId = req.user.userId;
 
     // this.chatsService.deleteChat('85f69130-0a43-4694-bb2b-786d4937c001');
     return this.chatsService.createChat(creatorId, body);
+  }
+
+  @Patch(':id')
+  updateChat(@Param('id') id, @Body(new ValidationPipe()) body: UpdateChatDto) {
+    this.chatsService.updateChat(id, body);
+  }
+
+  @Delete(':id')
+  deleteChat(@Param('id') id: string) {
+    if (id) {
+      return this.chatsService.deleteChat(id);
+    }
   }
 
   @Get('mock-create-message')

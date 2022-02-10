@@ -8,4 +8,4 @@ import { WsChatGateway } from './ws-chat.gateway';
   imports: [AuthModule, UsersModule, ChatsModule],
   providers: [WsChatGateway],
 })
-export class ChatModule {}
+export class ChatWsModule {}
