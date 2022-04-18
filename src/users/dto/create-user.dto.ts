@@ -1,7 +1,10 @@
 import { IsEmail, IsString } from 'class-validator';
 import { User } from '@prisma/client';
 
-type DBUserFields = Omit<User, 'id'>;
+// TODO: add creations of admins
+type OmitKeys = 'id' | 'role';
+
+type DBUserFields = Omit<User, OmitKeys>;
 
 export class CreateUserDto implements DBUserFields {
   @IsEmail()

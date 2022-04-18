@@ -11,6 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.strategy';
+import { CharCreatorGuard } from './chat-creator.guard';
 import { ChatsService } from './chats.service';
 import { CreateChatDto, UpdateChatDto } from './dto/create-chat.dto';
 
@@ -33,16 +34,17 @@ export class ChatsController {
   creatChat(@Req() req, @Body(new ValidationPipe()) body: CreateChatDto) {
     const creatorId = req.user.userId;
 
-    // this.chatsService.deleteChat('85f69130-0a43-4694-bb2b-786d4937c001');
     return this.chatsService.createChat(creatorId, body);
   }
 
   @Patch(':id')
+  @UseGuards(CharCreatorGuard)
   updateChat(@Param('id') id, @Body(new ValidationPipe()) body: UpdateChatDto) {
     this.chatsService.updateChat(id, body);
   }
 
   @Delete(':id')
+  @UseGuards(CharCreatorGuard)
   deleteChat(@Param('id') id: string) {
     if (id) {
       return this.chatsService.deleteChat(id);

@@ -9,6 +9,9 @@ import {
 } from '../prisma';
 import { CreateChatDto, UpdateChatDto } from './dto/create-chat.dto';
 
+// TODO: protect chats from users who are not in the chat
+// TODO: chat can be deleted by admin or chat creator
+
 @Injectable()
 export class ChatsService {
   constructor(

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/Users/Users.service';
-import { SignUpDto } from './signup.dto';
+import { SignUpDto } from './validation';
 
 export interface TokenPair {
   accessToken: string;
@@ -55,20 +55,26 @@ export class AuthService {
   }
 
   async refreshTokens(refreshToken: string): Promise<SignedResponse> {
-    const user = await this.verifyJwt(refreshToken);
-    return { ...this.getTokensPair(user), user };
+    try {
+      const user = await this.verifyJwt(refreshToken);
+      return { ...this.getTokensPair(user), user };
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 
-  private getTokensPair(user: any): TokenPair {
+  private getTokensPair(user: User): TokenPair {
     return {
       accessToken: this.jwtService.sign({
         sub: user.id,
         email: user.email,
+        role: user.role,
       }),
       refreshToken: this.jwtService.sign(
         {
           sub: user.id,
           email: user.email,
+          role: user.role,
         },
         { expiresIn: '7d' },
       ),

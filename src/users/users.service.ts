@@ -2,6 +2,20 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService, User } from '../prisma';
 import { CreateUserDto, UpdateUserDto } from './dto';
 
+import fs from 'fs';
+import path from 'path';
+
+interface FileLoaded {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  destination: string;
+  filename: string;
+  path: string;
+  size: number;
+}
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -60,5 +74,9 @@ export class UsersService {
         { firstName: 'Michel', lastName: 'LastName', email: 'mlast@mail.com' },
       ],
     });
+  }
+
+  async avatarLoaded(file: FileLoaded) {
+    const tempFile = file.path;
   }
 }

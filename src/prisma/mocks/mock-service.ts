@@ -3,7 +3,13 @@ import { PrismaService } from '../prisma.service';
 import { User } from '../types';
 
 const USERS: User[] = [
-  { id: '1', firstName: 'John', lastName: 'Doe', email: 'mock@email.com' },
+  {
+    id: '1',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'mock@email.com',
+    role: 'USER',
+  },
 ];
 
 class MockPrismaEntity<T> {

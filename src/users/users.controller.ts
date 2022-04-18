@@ -6,9 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/strategies/jwt.strategy';
 import { CreateUserDto } from './dto';
 import { UsersService } from './Users.service';
@@ -38,12 +41,16 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Patch(':id')
+  @Patch()
   @UseGuards(JwtAuthGuard)
-  updateUser(
-    @Param('id') id: string,
-    @Body(new ValidationPipe()) updateUserDto: CreateUserDto,
-  ) {
-    return this.usersService.update(id, updateUserDto);
+  @UseInterceptors(
+    FileInterceptor('file', {
+      // storage: multer,
+    }),
+  )
+  test(@UploadedFile() file: Express.Multer.File) {
+    console.log('TEST', file);
+    console.log('TEST buffer', file.buffer);
+    return {};
   }
 }

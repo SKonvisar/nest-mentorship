@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
   id           String         @id @default(uuid())
   email        String         @unique
@@ -15,6 +20,7 @@ model User {
   chats        UsersOnChats[]
   message      Message[]
   createdChats Chat[]
+  role         Role           @default(USER)
 }
 
 model Chat {

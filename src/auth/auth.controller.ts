@@ -5,15 +5,14 @@ import {
   Get,
   Req,
   UseGuards,
-  ValidationPipe,
   UseInterceptors,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategies/local.strategy';
-import { SignUpDto } from './signup.dto';
 import { Request } from 'express';
 import { MapTokensInterceptors } from './map-tokens-interceptor';
+import { SignUpDto, ValidationPipe } from './validation';
 
 @Controller('auth')
 @UseInterceptors(MapTokensInterceptors)
@@ -27,7 +26,7 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signUp(@Body(new ValidationPipe()) userData: SignUpDto) {
+  async signUp(@Body(ValidationPipe) userData: SignUpDto) {
     return this.authService.createUser(userData);
   }
 
@@ -47,6 +46,6 @@ export class AuthController {
    */
   @Get('logout')
   async logout() {
-    return true;
+    return { success: true };
   }
 }

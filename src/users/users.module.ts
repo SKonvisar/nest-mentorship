@@ -4,10 +4,14 @@ import { UsersService } from './Users.service';
 import { UsersController } from './Users.controller';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { ChatsModule } from '../chats/chats.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [ChatsModule],
+  imports: [
+    MulterModule.register({
+      dest: './files',
+    }),
+  ],
   controllers: [UsersController],
   providers: [UsersService, PrismaService],
   exports: [UsersService],
